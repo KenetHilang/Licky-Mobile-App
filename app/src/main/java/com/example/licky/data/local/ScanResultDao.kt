@@ -17,7 +17,7 @@ interface ScanResultDao {
     suspend fun delete(scanResult: ScanResult)
 
     @Query("SELECT * FROM scan_results WHERE id = :id")
-    suspend fun getScanResultById(id: Long): ScanResult?
+    suspend fun getScanResultById(id: String): ScanResult?
 
     @Query("SELECT * FROM scan_results ORDER BY timestamp DESC")
     suspend fun getAllScanResults(): List<ScanResult>

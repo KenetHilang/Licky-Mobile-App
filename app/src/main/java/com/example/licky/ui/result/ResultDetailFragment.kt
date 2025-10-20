@@ -21,7 +21,7 @@ class ResultDetailFragment : Fragment() {
     private var _binding: FragmentResultDetailBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ResultDetailViewModel by viewModels()
-    private var scanResultId: Long = -1L
+    private var scanResultId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,15 +36,15 @@ class ResultDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Get scan ID from Bundle instead of Safe Args
-        scanResultId = arguments?.getLong("scanResultId", -1L) ?: -1L
+        scanResultId = arguments?.getString("scanResultId")
 
-        if (scanResultId == -1L) {
+        if (scanResultId.isNullOrBlank()) {
             Toast.makeText(requireContext(), "Invalid scan result", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
             return
         }
 
-        viewModel.loadScanResult(scanResultId)
+        viewModel.loadScanResult(scanResultId!!)
         setupObservers()
     }
 
@@ -62,28 +62,27 @@ class ResultDetailFragment : Fragment() {
                     // Date
                     textViewScanDate.text = DateUtils.formatDateTime(result.timestamp)
 
-                    // Health status
-                    textViewHealthStatus.text = result.overallHealth.name.replace("_", " ")
-                    textViewHealthStatusDescription.text = getHealthStatusDescription(result.overallHealth)
+                    // Headline: show Top-1 predicted label
+                    val topLabel = result.detectedDiseases.firstOrNull()?.disease?.name
+                        ?: result.overallHealth.name.replace("_", " ")
+                    textViewHealthStatus.text = topLabel
+
+                    // Description: show Top-5 list if provided via args, otherwise fallback
+                    val top5Text = arguments?.getString("top5Text")
+                    textViewHealthStatusDescription.text = if (!top5Text.isNullOrBlank()) {
+                        top5Text
+                    } else {
+                        getHealthStatusDescription(result.overallHealth)
+                    }
+                    // Hide detailed disease section
+                    val diseaseCard = requireView().findViewById<com.google.android.material.card.MaterialCardView>(R.id.card_disease_info)
+                    diseaseCard?.visibility = View.GONE
 
                     // Confidence
                     textViewConfidenceScore.text = "${(result.confidenceScore * 100).toInt()}%"
                     progressBarConfidence.progress = (result.confidenceScore * 100).toInt()
 
-                    // Detected diseases
-                    if (result.detectedDiseases.isNotEmpty()) {
-                        val disease = result.detectedDiseases.first().disease
-                        textViewDiseaseName.text = disease.name
-                        textViewDiseaseDescription.text = disease.description
-
-                        // Symptoms
-                        val symptomsText = disease.symptoms.joinToString("\n") { "• $it" }
-                        textViewSymptoms.text = symptomsText
-
-                        // Recommendations
-                        val recommendationsText = disease.recommendations.joinToString("\n") { "• $it" }
-                        textViewRecommendations.text = recommendationsText
-                    }
+                    // Skip showing disease details (kept minimal per request)
 
                     // Notes
                     result.notes?.let {

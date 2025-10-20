@@ -50,6 +50,10 @@ android {
         mlModelBinding = true
     }
 
+    aaptOptions {
+        noCompress("tflite")
+    }
+
     kapt {
         correctErrorTypes = true
         useBuildCache = true

@@ -31,7 +31,7 @@ class ResultDetailViewModel(application: Application) : AndroidViewModel(applica
         repository = ScanRepository(scanResultDao)
     }
 
-    fun loadScanResult(id: Long) {
+    fun loadScanResult(id: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {

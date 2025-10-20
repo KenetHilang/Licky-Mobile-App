@@ -26,6 +26,8 @@
     <!-- Camera Screen -->
     <string name="camera_instructions">Position your tongue in the center</string>
     <string name="button_capture">Capture</string>
+    <string name="button_upload">Upload</string>
+    <string name="button_upload_from_gallery">Upload from gallery</string>
     <string name="analyzing">Analyzing…</string>
     <string name="camera_permission_required">Camera permission is required</string>
 

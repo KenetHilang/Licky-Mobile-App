@@ -2,6 +2,8 @@ package com.example.licky.ui.camera
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +39,8 @@ class CameraFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var currentPhotoFile: File? = null
 
+    private val IMG_SIZE = 224
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -49,6 +53,15 @@ class CameraFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
             findNavController().navigateUp()
+        }
+    }
+
+    // Gallery picker
+    private val pickImageLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            handlePickedImage(uri)
         }
     }
 
@@ -84,6 +97,15 @@ class CameraFragment : Fragment() {
         binding.buttonClose.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        binding.buttonUpload.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
+
+        // Top bar upload icon
+        binding.buttonUploadTop.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
     }
 
     private fun setupObservers() {
@@ -99,7 +121,16 @@ class CameraFragment : Fragment() {
 
                     // Navigate to result screen using Bundle instead of Safe Args
                     resource.data?.let { scanResult ->
-                        val bundle = bundleOf("scanResultId" to scanResult.id)
+                        // Build top-5 string from latest class probabilities
+                        val pairs = viewModel.classProbabilities.value ?: emptyList()
+                        val top5Text = pairs.take(5).mapIndexed { idx, (label, p) ->
+                            val pct = (p * 100f)
+                            "${idx + 1}. ${label} ${"%.1f".format(pct)}%"
+                        }.joinToString("\n")
+                        val bundle = bundleOf(
+                            "scanResultId" to scanResult.id,
+                            "top5Text" to top5Text
+                        )
                         findNavController().navigate(
                             R.id.action_navigation_camera_to_resultDetailFragment,
                             bundle
@@ -121,6 +152,16 @@ class CameraFragment : Fragment() {
                     binding.buttonCapture.isEnabled = true
                 }
             }
+        }
+
+        // Show all class probabilities after inference
+        viewModel.classProbabilities.observe(viewLifecycleOwner) { pairs ->
+            if (pairs.isNullOrEmpty()) return@observe
+            val msg = pairs.joinToString(separator = "\n") { (label, p) ->
+                val pct = (p * 100f)
+                "${label}: ${"%.1f".format(pct)}%"
+            }
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -175,7 +216,9 @@ class CameraFragment : Fragment() {
                     currentPhotoFile?.let { file ->
                         val bitmap = ImageUtils.loadBitmap(file.absolutePath)
                         if (bitmap != null) {
-                            viewModel.analyzeTongueImage(file.absolutePath, bitmap)
+                            val rotated = ImageUtils.rotateBitmapIfNeeded(file.absolutePath, bitmap)
+                            // Delegate analysis to ViewModel (saves result and navigates via observer)
+                            viewModel.analyzeTongueImage(file.absolutePath, rotated)
                         } else {
                             Toast.makeText(
                                 requireContext(),
@@ -196,6 +239,36 @@ class CameraFragment : Fragment() {
             }
         )
     }
+
+    private fun handlePickedImage(uri: Uri) {
+        try {
+            // Load bitmap from URI
+            val stream = requireContext().contentResolver.openInputStream(uri)
+            val bitmap = android.graphics.BitmapFactory.decodeStream(stream)
+            stream?.close()
+
+            if (bitmap == null) {
+                Toast.makeText(requireContext(), "Unable to load image", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Save a copy to app storage for consistency with camera flow
+            val file = ImageUtils.createImageFile(requireContext())
+            val rotated = bitmap // Gallery images usually oriented; optional: detect EXIF via Uri
+            if (!ImageUtils.saveBitmap(rotated, file)) {
+                Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Analyze via ViewModel
+            viewModel.analyzeTongueImage(file.absolutePath, rotated)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Failed to process image: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Inference is handled in ViewModel
+
 
     override fun onDestroyView() {
         super.onDestroyView()

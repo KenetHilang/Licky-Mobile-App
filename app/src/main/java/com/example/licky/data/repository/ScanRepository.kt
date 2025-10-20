@@ -29,7 +29,7 @@ class ScanRepository(private val scanResultDao: ScanResultDao) {
     }
 
     // Get a specific scan result by ID
-    suspend fun getScanResultById(id: Long): ScanResult? = withContext(Dispatchers.IO) {
+    suspend fun getScanResultById(id: String): ScanResult? = withContext(Dispatchers.IO) {
         scanResultDao.getScanResultById(id)
     }
 

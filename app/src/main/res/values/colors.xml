@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary">#FF4081F4</color>
+    <color name="primary_dark">#FF1565C0</color>
+    <color name="primary_light">#FF90CAF9</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent">#FFFF4081</color>
+    <color name="accent_light">#FFFF80AB</color>
+    
+    <!-- Background Colors -->
+    <color name="background">#FFF5F5F5</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="surface_variant">#FFF8F9FA</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FF212121</color>
+    <color name="text_secondary">#FF757575</color>
+    <color name="text_hint">#FFBDBDBD</color>
+    <color name="text_white">#FFFFFFFF</color>
+    
+    <!-- Status Colors -->
+    <color name="success">#FF4CAF50</color>
+    <color name="warning">#FFFFA726</color>
+    <color name="error">#FFF44336</color>
+    <color name="info">#FF2196F3</color>
+    
+    <!-- Health Status Colors -->
+    <color name="health_excellent">#FF4CAF50</color>
+    <color name="health_good">#FF8BC34A</color>
+    <color name="health_moderate">#FFFFA726</color>
+    <color name="health_poor">#FFFF5722</color>
+    <color name="health_critical">#FFF44336</color>
+    
+    <!-- Other Colors -->
+    <color name="divider">#FFE0E0E0</color>
+    <color name="overlay">#80000000</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Legacy -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+</resources>

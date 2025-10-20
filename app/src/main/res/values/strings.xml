@@ -1,0 +1,85 @@
+<resources>
+    <string name="app_name">Licky</string>
+    <string name="app_tagline">Tongue Health Analysis</string>
+
+    <!-- Navigation -->
+    <string name="title_home">Home</string>
+    <string name="title_camera">Scan</string>
+    <string name="title_history">History</string>
+    <string name="title_profile">Profile</string>
+
+    <!-- Home Screen -->
+    <string name="home_subtitle">Tongue Disease Detection</string>
+    <string name="total_scans">Total Scans</string>
+    <string name="start_scan">Start New Scan</string>
+    <string name="recent_scans">Recent Scans</string>
+    <string name="view_all">View All</string>
+    <string name="no_scans_yet">No Scans Yet</string>
+    <string name="tap_scan_to_start">Tap the scan button to begin your first analysis</string>
+
+    <!-- Common -->
+    <string name="delete">Delete</string>
+    <string name="scan_thumbnail">Scan thumbnail</string>
+    <string name="confidence_format">%d%% Confidence</string>
+    <string name="empty_scans">There is no Scans yet</string>
+
+    <!-- Camera Screen -->
+    <string name="camera_instructions">Position your tongue in the center</string>
+    <string name="button_capture">Capture</string>
+    <string name="analyzing">Analyzing…</string>
+    <string name="camera_permission_required">Camera permission is required</string>
+
+    <!-- Results Screen -->
+    <string name="results_title">Scan Results</string>
+    <string name="health_status">Health Status</string>
+    <string name="confidence_score">Confidence Score</string>
+    <string name="detected_conditions">Detected Conditions</string>
+    <string name="symptoms">Symptoms</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="add_notes">Add Notes</string>
+    <string name="save_notes">Save Notes</string>
+    <string name="scan_date">Scan Date</string>
+
+    <!-- History Screen -->
+    <string name="history_title">Scan History</string>
+    <string name="clear_all">Clear All</string>
+    <string name="delete_scan">Delete Scan</string>
+    <string name="delete_confirmation">Are you sure you want to delete this scan?</string>
+    <string name="clear_all_confirmation">Are you sure you want to delete all scan history? This action cannot be undone.</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_title">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="about">About Licky</string>
+    <string name="help">Help &amp; Support</string>
+    <string name="privacy">Privacy Policy</string>
+    <string name="terms">Terms of Service</string>
+    <string name="version">Version</string>
+    <string name="guest_user">Guest User</string>
+    <string name="sign_in_message">Sign in to save your data</string>
+
+    <!-- Health Status -->
+    <string name="health_healthy">Healthy</string>
+    <string name="health_mild">Mild Concerns</string>
+    <string name="health_moderate">Moderate Concerns</string>
+    <string name="health_severe">Severe Concerns</string>
+    <string name="health_unknown">Unknown</string>
+
+    <!-- Actions -->
+    <string name="button_delete">Delete</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_save">Save</string>
+    <string name="button_close">Close</string>
+    <string name="button_retry">Retry</string>
+
+    <!-- Messages -->
+    <string name="analysis_failed">Analysis failed. Please try again.</string>
+    <string name="image_saved">Image saved successfully</string>
+    <string name="scan_deleted">Scan deleted</string>
+    <string name="all_scans_deleted">All scans deleted</string>
+
+
+
+    <!-- Disclaimer -->
+    <string name="disclaimer">Disclaimer: This app is for educational purposes only and should not replace professional medical advice.</string>
+</resources>

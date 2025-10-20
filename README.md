@@ -1,6 +1,6 @@
 # Licky - Tongue Health Analysis App 👅
 
-Group Members
+## Group Members
 | Name (Nama)           | Student ID (NRP)   |
 |----------------|--------------|
 | Nathan Kho Pancras | 5027231002 |
@@ -11,3 +11,7 @@ Group Members
 | Fico Simhanandi | 5027231030 |
 | Radit | 50272310XX |
 | Gandhi | 50272310XX |
+
+## General Overview
+
+Licky is an Android-based mobile application that leverages machine learning to analyze tongue images and detect potential health conditions. Using advanced image processing and disease detection algorithms, the app provides users with instant health insights based on tongue appearance.

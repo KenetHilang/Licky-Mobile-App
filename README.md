@@ -9,8 +9,8 @@
 | Michael Kenneth Salim      | 5027231008     |
 | Rafael Ega Krisaditya | 5027231025 |
 | Fico Simhanandi | 5027231030 |
-| Radit | 50272310XX |
-| Gandhi | 50272310XX |
+| Raditya Hardian Santoso | 5027231033 |
+| Gandhi Ert Julio | 5027231081 |
 
 ## General Overview
 

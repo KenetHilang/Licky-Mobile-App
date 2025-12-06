@@ -16,47 +16,54 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="0dp">
 
-            <!-- Header -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/home_subtitle"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
-
-            <!-- Stats Card -->
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/primary">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageViewProfile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="4dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_emoji_foreground"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                    app:strokeColor="@color/secondary"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Lickey"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/secondary" />
+
+
+
+            </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="10dp"
                     android:gravity="center">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/total_scans"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp" />
+                        android:textColor="@color/secondary"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textViewTotalScans"
@@ -64,108 +71,124 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textColor="@android:color/white"
-                        android:textSize="40sp"
+                        android:textSize="42sp"
                         android:textStyle="bold"
                         tools:text="0" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Scan Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonScan"
+            <!-- Unified Recent Scans Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_marginTop="24dp"
-                android:text="@string/start_scan"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:cornerRadius="30dp"
-                app:icon="@drawable/ic_camera"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp" />
+                android:layout_marginBottom="-20dp"
+                app:cardBackgroundColor="@color/cardColor"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
 
-            <!-- Recent Scans Header -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/recent_scans"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:orientation="vertical"
+                    android:paddingTop="16dp">
 
-                <TextView
-                    android:id="@+id/textViewViewAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/view_all"
-                    android:textSize="14sp"
-                    android:textColor="@color/primary"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="8dp" />
+                    <!-- Header (Always Visible inside the card) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="18dp">
 
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/recent_scans"
+                            android:textColor="@color/secondary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
-            <!-- Recent Scans RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewRecentScans"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_scan_history"
-                tools:itemCount="3" />
+                        <TextView
+                            android:id="@+id/textViewViewAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="8dp"
+                            android:text="@string/view_all"
+                            android:textColor="@color/primary"
+                            android:textSize="14sp" />
+                    </LinearLayout>
 
-            <!-- Empty State -->
-            <LinearLayout
-                android:id="@+id/layoutEmptyState"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:visibility="gone"
-                tools:visibility="visible">
+                    <!-- Content Area: Holds both List and Empty State -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp">
 
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/ic_tongue"
-                    android:alpha="0.3"
-                    android:contentDescription="@string/no_scans_yet" />
+                        <!-- 1. The List (Visible when data exists) -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewRecentScans"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            tools:itemCount="3"
+                            tools:listitem="@layout/item_scan_history" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/no_scans_yet"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_secondary"
-                    android:textAlignment="center" />
+                        <!-- 2. The Empty State (Visible when no data) -->
+                        <LinearLayout
+                            android:id="@+id/layoutEmptyState"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:layout_marginTop="80dp"
+                            android:visibility="gone"
+                            tools:visibility="visible">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/tap_scan_to_start"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:textAlignment="center" />
+                            <ImageView
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:alpha="0.3"
+                                android:contentDescription="@string/no_scans_yet"
+                                android:src="@drawable/ic_tongue"
+                                app:tint="@color/secondary" />
 
-            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:text="@string/no_scans_yet"
+                                android:textAlignment="center"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/tap_scan_to_start"
+                                android:textAlignment="center"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
+
+
+
 
     </ScrollView>
 

@@ -7,18 +7,14 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_camera"
-        android:icon="@drawable/ic_camera"
-        android:title="@string/title_camera" />
+        android:id="@+id/placeholder"
+        android:enabled="false"
+        android:title="" />
 
     <item
         android:id="@+id/navigation_history"
         android:icon="@drawable/ic_history"
         android:title="@string/title_history" />
 
-    <item
-        android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_profile"
-        android:title="@string/title_profile" />
 
 </menu>

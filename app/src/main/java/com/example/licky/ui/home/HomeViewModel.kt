@@ -3,7 +3,6 @@ package com.example.licky.ui.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.licky.data.local.LickyDatabase
@@ -20,32 +19,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val recentScans: LiveData<List<ScanResult>>
 
-    private val _totalScans = MutableLiveData<Int>()
-    val totalScans: LiveData<Int> = _totalScans
+    val totalScans: LiveData<Int>
 
     init {
         val scanResultDao = LickyDatabase.getDatabase(application).scanResultDao()
         repository = ScanRepository(scanResultDao)
 
-        // Get recent 5 scans as Flow and convert to LiveData
-        recentScans = scanResultDao.getRecentScansFlow(5).asLiveData()
+        // Get recent 4 scans (matches your previous request)
+        recentScans = repository.getRecentScansFlow(4).asLiveData()
 
-        // Get total scan count
-        loadTotalScans()
+        // Connect the counter flow
+        totalScans = repository.getScanCountFlow().asLiveData()
     }
 
-    private fun loadTotalScans() {
-        viewModelScope.launch {
-            val dao = LickyDatabase.getDatabase(getApplication()).scanResultDao()
-            _totalScans.value = dao.getScanCount()
-        }
-    }
 
     fun deleteScanResult(scanResult: ScanResult) {
         viewModelScope.launch {
             repository.deleteScanResult(scanResult)
-            // Refresh total count after deletion
-            loadTotalScans()
         }
     }
 }

@@ -33,13 +33,15 @@ class CameraFragment : Fragment() {
 
     private var _binding: FragmentCameraBinding? = null
     private val binding get() = _binding!!
+
+
     private val viewModel: CameraViewModel by viewModels()
 
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     private var currentPhotoFile: File? = null
 
-    private val IMG_SIZE = 224
+    private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -102,9 +104,15 @@ class CameraFragment : Fragment() {
             pickImageLauncher.launch("image/*")
         }
 
-        // Top bar upload icon
-        binding.buttonUploadTop.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+
+        binding.buttonFlip.setOnClickListener {
+            cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            } else {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            }
+
+            startCamera()
         }
     }
 
@@ -181,7 +189,6 @@ class CameraFragment : Fragment() {
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .build()
 
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
                 cameraProvider.unbindAll()

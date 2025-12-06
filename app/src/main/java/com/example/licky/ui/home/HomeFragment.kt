@@ -58,10 +58,6 @@ class HomeFragment : Fragment() {
             adapter = scanHistoryAdapter
         }
 
-        // Scan button click
-        binding.buttonScan.setOnClickListener {
-            findNavController().navigate(R.id.action_home_to_camera)
-        }
 
         // View all history click
         binding.textViewViewAll.setOnClickListener {
@@ -79,7 +75,7 @@ class HomeFragment : Fragment() {
                 binding.recyclerViewRecentScans.visibility = View.VISIBLE
                 binding.layoutEmptyState.visibility = View.GONE
                 binding.textViewViewAll.visibility = View.VISIBLE
-                scanHistoryAdapter.submitList(scans)
+                scanHistoryAdapter.submitList(scans.take(3))
             }
         }
 

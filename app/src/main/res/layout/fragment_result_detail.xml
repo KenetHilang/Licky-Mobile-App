@@ -44,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/cardColor">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -123,7 +124,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/cardColor">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -198,7 +200,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/cardColor">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -218,23 +221,25 @@
                         android:id="@+id/edit_text_notes"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="15dp"
                         android:background="@drawable/bg_card"
                         android:gravity="top"
                         android:hint="Add your notes here..."
                         android:inputType="textMultiLine"
                         android:padding="12dp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/navigation"
                         android:textSize="14sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/button_save_notes"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_marginTop="8dp"
-                        android:text="@string/save_notes" />
-
+                        android:text="@string/save_notes"
+                        android:textColor="@color/primary"
+                        app:strokeColor="@color/primary" />
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>

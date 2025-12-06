@@ -7,7 +7,6 @@
     android:background="@color/black"
     tools:context=".ui.camera.CameraFragment">
 
-    <!-- Camera Preview -->
     <androidx.camera.view.PreviewView
         android:id="@+id/preview_view"
         android:layout_width="0dp"
@@ -15,9 +14,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="invisible"/>
 
-    <!-- Overlay Guide -->
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -27,7 +26,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Top Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,12 +49,12 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/button_upload_top"
+            android:id="@+id/button_flip"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/button_upload"
-            android:src="@drawable/ic_upload"
+            android:contentDescription="@string/button_flip"
+            android:src="@drawable/baseline_cameraswitch_24"
             app:tint="@color/white" />
 
     </LinearLayout>
@@ -101,9 +99,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/button_capture"
-            app:backgroundTint="@color/accent"
+            app:backgroundTint="@color/button_middle"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_camera"
+            app:srcCompat="@drawable/baseline_camera_alt_24"
             app:tint="@color/white" />
 
         <!-- Upload from Gallery Button -->

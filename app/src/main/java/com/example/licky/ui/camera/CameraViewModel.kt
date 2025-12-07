@@ -20,6 +20,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.util.UUID
@@ -44,7 +46,7 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
     }
     
     /**
-     * Analyze tongue image using TFLite model with ImageNet normalization.
+     * Analyze tongue image using TFLite model.
      * Saves ScanResult and emits via LiveData.
      */
     fun analyzeTongueImage(imagePath: String, bitmap: Bitmap) {
@@ -53,13 +55,21 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
 
             try {
                 val interpreter = getInterpreter()
-
-                val input = preprocessImage(bitmap, IMG_SIZE)
+                
+                // Inspect input shape to decide preprocessing
+                // This handles both NHWC and NCHW models dynamically
+                val inputTensor = interpreter.getInputTensor(0)
+                val inputShape = inputTensor.shape() 
+                
+                // Convert bitmap to ByteBuffer matching the model input shape
+                // Also applies ImageNet normalization: (val - mean) / std
+                val inputBuffer = convertBitmapToByteBuffer(bitmap, IMG_SIZE, inputShape)
+                
                 val output = Array(1) { FloatArray(NUM_CLASSES) }
 
                 // Run inference off main thread
                 withContext(Dispatchers.Default) {
-                    interpreter.run(input, output)
+                    interpreter.run(inputBuffer, output)
                 }
 
                 val probs = softmax(output[0])
@@ -197,7 +207,10 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
             // Fallback to root assets location
             loadModelFile("tongue_classifier_model.tflite")
         }
-        val interpreter = Interpreter(buffer)
+        val options = Interpreter.Options()
+        // Adding 4 threads to speed up
+        options.setNumThreads(4)
+        val interpreter = Interpreter(buffer, options)
         tflite = interpreter
         return interpreter
     }
@@ -211,18 +224,60 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    private fun preprocessImage(bitmap: Bitmap, size: Int): Array<Array<Array<FloatArray>>> {
-        val scaled = Bitmap.createScaledBitmap(bitmap, size, size, true)
-        val input = Array(1) { Array(size) { Array(size) { FloatArray(3) } } }
-        for (y in 0 until size) {
-            for (x in 0 until size) {
-                val p = scaled.getPixel(x, y)
-                input[0][y][x][0] = ((Color.red(p) / 255.0f) - 0.485f) / 0.229f
-                input[0][y][x][1] = ((Color.green(p) / 255.0f) - 0.456f) / 0.224f
-                input[0][y][x][2] = ((Color.blue(p) / 255.0f) - 0.406f) / 0.225f
+    private fun convertBitmapToByteBuffer(bitmap: Bitmap, size: Int, shape: IntArray): ByteBuffer {
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
+        // 4 bytes per float, 1 batch, size x size, 3 channels
+        val byteBuffer = ByteBuffer.allocateDirect(4 * 1 * size * size * 3)
+        byteBuffer.order(ByteOrder.nativeOrder())
+
+        val pixels = IntArray(size * size)
+        scaledBitmap.getPixels(pixels, 0, size, 0, 0, size, size)
+
+        // ImageNet statistics
+        val meanR = 0.485f
+        val meanG = 0.456f
+        val meanB = 0.406f
+        val stdR = 0.229f
+        val stdG = 0.224f
+        val stdB = 0.225f
+
+        // Check if NHWC or NCHW based on input shape
+        // NHWC: [1, H, W, 3] -> shape[3] == 3
+        // NCHW: [1, 3, H, W] -> shape[1] == 3
+        val isNHWC = shape.size == 4 && shape[3] == 3
+        
+        if (isNHWC) {
+            // Iterate pixels and put RGB for each
+            for (pixelValue in pixels) {
+                // (val / 255.0 - mean) / std
+                val r = ((pixelValue shr 16 and 0xFF) / 255.0f - meanR) / stdR
+                val g = ((pixelValue shr 8 and 0xFF) / 255.0f - meanG) / stdG
+                val b = ((pixelValue and 0xFF) / 255.0f - meanB) / stdB
+                
+                byteBuffer.putFloat(r)
+                byteBuffer.putFloat(g)
+                byteBuffer.putFloat(b)
+            }
+        } else {
+            // NCHW: All R, then all G, then all B
+            
+            // Red
+            for (pixelValue in pixels) {
+                val r = ((pixelValue shr 16 and 0xFF) / 255.0f - meanR) / stdR
+                byteBuffer.putFloat(r)
+            }
+            // Green
+            for (pixelValue in pixels) {
+                val g = ((pixelValue shr 8 and 0xFF) / 255.0f - meanG) / stdG
+                byteBuffer.putFloat(g)
+            }
+            // Blue
+            for (pixelValue in pixels) {
+                val b = ((pixelValue and 0xFF) / 255.0f - meanB) / stdB
+                byteBuffer.putFloat(b)
             }
         }
-        return input
+        return byteBuffer
     }
 
     private fun softmax(logits: FloatArray): FloatArray {

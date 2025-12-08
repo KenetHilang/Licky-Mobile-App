@@ -14,7 +14,6 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
         app:defaultNavHost="true"
         app:navGraph="@navigation/mobile_navigation" />
 
@@ -38,7 +37,7 @@
             app:elevation="0dp"
             app:itemIconTint="@color/nav_button"
             app:itemActiveIndicatorStyle="@null"
-            app:itemTextColor="@color/nav_button_color"
+            app:itemTextColor="@color/nav_button"
             app:menu="@menu/bottom_nav_menu" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>

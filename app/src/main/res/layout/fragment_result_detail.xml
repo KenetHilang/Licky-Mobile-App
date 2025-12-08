@@ -13,14 +13,35 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Image -->
-        <ImageView
-            android:id="@+id/image_view_scanned_tongue"
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/ic_tongue" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image_view_scanned_tongue"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:contentDescription="@string/app_name"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/ic_tongue" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/black_gradient" />
+
+            <ImageButton
+                android:id="@+id/button_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/baseline_arrow_back_24"
+                app:tint="@android:color/white" />
+
+        </FrameLayout>
+
 
         <!-- Content -->
         <LinearLayout
@@ -170,7 +191,6 @@
                         android:textSize="14sp"
                         tools:text="• Pink color\n• Smooth texture" />
 
-                    <!-- Recommendations -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

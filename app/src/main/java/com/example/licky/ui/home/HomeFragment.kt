@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
                 // Navigate to result detail
                 val bundle = bundleOf("scanResultId" to scanResult.id)
                 findNavController().navigate(
-                    R.id.action_home_to_result,
+                    R.id.action_global_to_result,
                     bundle
                 )
             },
@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
         }
 
 
-        // View all history click
         binding.textViewViewAll.setOnClickListener {
             findNavController().navigate(R.id.navigation_history)
         }

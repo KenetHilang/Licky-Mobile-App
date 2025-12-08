@@ -26,9 +26,6 @@ import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-/**
- * Camera Fragment - Captures tongue images
- */
 class CameraFragment : Fragment() {
 
     private var _binding: FragmentCameraBinding? = null
@@ -58,7 +55,6 @@ class CameraFragment : Fragment() {
         }
     }
 
-    // Gallery picker
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -104,7 +100,6 @@ class CameraFragment : Fragment() {
             pickImageLauncher.launch("image/*")
         }
 
-
         binding.buttonFlip.setOnClickListener {
             cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
@@ -127,9 +122,7 @@ class CameraFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     binding.buttonCapture.isEnabled = true
 
-                    // Navigate to result screen using Bundle instead of Safe Args
                     resource.data?.let { scanResult ->
-                        // Build top-5 string from latest class probabilities
                         val pairs = viewModel.classProbabilities.value ?: emptyList()
                         val top5Text = pairs.take(5).mapIndexed { idx, (label, p) ->
                             val pct = (p * 100f)
@@ -140,7 +133,7 @@ class CameraFragment : Fragment() {
                             "top5Text" to top5Text
                         )
                         findNavController().navigate(
-                            R.id.action_navigation_camera_to_resultDetailFragment,
+                            R.id.action_global_to_result,
                             bundle
                         )
                         viewModel.resetAnalysisResult()
@@ -160,16 +153,6 @@ class CameraFragment : Fragment() {
                     binding.buttonCapture.isEnabled = true
                 }
             }
-        }
-
-        // Show all class probabilities after inference
-        viewModel.classProbabilities.observe(viewLifecycleOwner) { pairs ->
-            if (pairs.isNullOrEmpty()) return@observe
-            val msg = pairs.joinToString(separator = "\n") { (label, p) ->
-                val pct = (p * 100f)
-                "${label}: ${"%.1f".format(pct)}%"
-            }
-            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -224,7 +207,6 @@ class CameraFragment : Fragment() {
                         val bitmap = ImageUtils.loadBitmap(file.absolutePath)
                         if (bitmap != null) {
                             val rotated = ImageUtils.rotateBitmapIfNeeded(file.absolutePath, bitmap)
-                            // Delegate analysis to ViewModel (saves result and navigates via observer)
                             viewModel.analyzeTongueImage(file.absolutePath, rotated)
                         } else {
                             Toast.makeText(
@@ -261,21 +243,17 @@ class CameraFragment : Fragment() {
 
             // Save a copy to app storage for consistency with camera flow
             val file = ImageUtils.createImageFile(requireContext())
-            val rotated = bitmap // Gallery images usually oriented; optional: detect EXIF via Uri
+            val rotated = bitmap
             if (!ImageUtils.saveBitmap(rotated, file)) {
                 Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_SHORT).show()
                 return
             }
 
-            // Analyze via ViewModel
             viewModel.analyzeTongueImage(file.absolutePath, rotated)
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Failed to process image: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
-
-    // Inference is handled in ViewModel
-
 
     override fun onDestroyView() {
         super.onDestroyView()

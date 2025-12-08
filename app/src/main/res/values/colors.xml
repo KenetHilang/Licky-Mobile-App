@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Primary Colors -->
-    <color name="primary">#FF4081F4</color>
-    <color name="primary_dark">#FF1565C0</color>
-    <color name="primary_light">#FF90CAF9</color>
+    <color name="primary">#8caaee</color>
     <color name="background">#1F1E2E</color>
 
     <!-- Secondary Colors -->
@@ -13,33 +11,17 @@
     <color name="nav_button">#E6E7DA</color>
     <color name="button_middle">#1F1E2E</color>
     
-    <!-- Accent Colors -->
-    <color name="accent">#FFFF4081</color>
-    <color name="accent_light">#FFFF80AB</color>
-    
     <!-- Background Colors -->
     <color name="cardColor">#262637</color>
     <color name="surface">#FFFFFFFF</color>
-    <color name="surface_variant">#FFF8F9FA</color>
     
     <!-- Text Colors -->
     <color name="text_primary">#C6D0F5</color>
     <color name="text_secondary">#B5BFE2</color>
-    <color name="text_hint">#FFBDBDBD</color>
-    <color name="text_white">#FFFFFFFF</color>
     
     <!-- Status Colors -->
-    <color name="success">#FF4CAF50</color>
-    <color name="warning">#FFFFA726</color>
-    <color name="error">#FFF44336</color>
-    <color name="info">#FF2196F3</color>
-    
-    <!-- Health Status Colors -->
-    <color name="health_excellent">#FF4CAF50</color>
-    <color name="health_good">#FF8BC34A</color>
-    <color name="health_moderate">#FFFFA726</color>
-    <color name="health_poor">#FFFF5722</color>
-    <color name="health_critical">#FFF44336</color>
+    <color name="success">#a6d189</color>
+    <color name="error">#e78284</color>
     
     <!-- Other Colors -->
     <color name="divider">#FFE0E0E0</color>
@@ -47,12 +29,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
-    
-    <!-- Legacy -->
-    <color name="nav_button_color">#E6E7DA</color>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 </resources>

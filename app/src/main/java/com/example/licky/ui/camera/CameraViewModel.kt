@@ -26,9 +26,6 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.util.UUID
 
-/**
- * ViewModel for Camera and Analysis
- */
 class CameraViewModel(application: Application) : AndroidViewModel(application) {
     
     private val repository: ScanRepository
@@ -36,7 +33,6 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
     private val _analysisResult = MutableLiveData<Resource<ScanResult>>()
     val analysisResult: LiveData<Resource<ScanResult>> = _analysisResult
     
-    // Publishes the full per-class probabilities for the latest inference
     private val _classProbabilities = MutableLiveData<List<Pair<String, Float>>>()
     val classProbabilities: LiveData<List<Pair<String, Float>>> = _classProbabilities
     
@@ -45,10 +41,6 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         repository = ScanRepository(scanResultDao)
     }
     
-    /**
-     * Analyze tongue image using TFLite model.
-     * Saves ScanResult and emits via LiveData.
-     */
     fun analyzeTongueImage(imagePath: String, bitmap: Bitmap) {
         viewModelScope.launch {
             _analysisResult.value = Resource.Loading()
@@ -56,24 +48,18 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 val interpreter = getInterpreter()
                 
-                // Inspect input shape to decide preprocessing
-                // This handles both NHWC and NCHW models dynamically
                 val inputTensor = interpreter.getInputTensor(0)
                 val inputShape = inputTensor.shape() 
                 
-                // Convert bitmap to ByteBuffer matching the model input shape
-                // Also applies ImageNet normalization: (val - mean) / std
                 val inputBuffer = convertBitmapToByteBuffer(bitmap, IMG_SIZE, inputShape)
                 
                 val output = Array(1) { FloatArray(NUM_CLASSES) }
 
-                // Run inference off main thread
                 withContext(Dispatchers.Default) {
                     interpreter.run(inputBuffer, output)
                 }
 
                 val probs = softmax(output[0])
-                // Publish sorted probabilities for UI/log
                 val pairs = CLASSES.mapIndexed { idx, label -> label to probs.getOrElse(idx) { 0f } }
                     .sortedByDescending { it.second }
                 _classProbabilities.postValue(pairs)
@@ -81,11 +67,10 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
                 var topProb = probs[topIdx]
                 var topLabel = CLASSES.getOrElse(topIdx) { "Unknown" }
 
-                // Calibration: prefer "healthy" if its probability is high and close to top
                 val idxHealthy = CLASSES.indexOf("healthy")
                 if (idxHealthy >= 0) {
                     val pHealthy = probs[idxHealthy]
-                    val margin = 0.10f // within 10% of top
+                    val margin = 0.10f
                     if (pHealthy >= 0.50f && pHealthy + margin >= topProb) {
                         topLabel = "healthy"
                         topProb = pHealthy
@@ -176,10 +161,10 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
     companion object {
         private const val TAG = "CameraViewModel"
     }
-    
-    
+
     fun resetAnalysisResult() {
-        _analysisResult.postValue(Resource.Loading())
+        _analysisResult.postValue(null)
+        _classProbabilities.postValue(emptyList())
     }
 
     override fun onCleared() {
@@ -191,7 +176,6 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         tflite = null
     }
 
-    // --- TFLite helpers ---
     private val IMG_SIZE = 224
     private val NUM_CLASSES = 5
     private val CLASSES = arrayOf("healthy", "benign", "OPMD_Pra-Cancer", "OSCC_Cancer", "Diabetes")
@@ -204,11 +188,9 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         val buffer = try {
             loadModelFile("ml/tongue_classifier_model.tflite")
         } catch (e: Exception) {
-            // Fallback to root assets location
             loadModelFile("tongue_classifier_model.tflite")
         }
         val options = Interpreter.Options()
-        // Adding 4 threads to speed up
         options.setNumThreads(4)
         val interpreter = Interpreter(buffer, options)
         tflite = interpreter
@@ -241,37 +223,26 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         val stdG = 0.224f
         val stdB = 0.225f
 
-        // Check if NHWC or NCHW based on input shape
-        // NHWC: [1, H, W, 3] -> shape[3] == 3
-        // NCHW: [1, 3, H, W] -> shape[1] == 3
         val isNHWC = shape.size == 4 && shape[3] == 3
         
         if (isNHWC) {
-            // Iterate pixels and put RGB for each
             for (pixelValue in pixels) {
-                // (val / 255.0 - mean) / std
                 val r = ((pixelValue shr 16 and 0xFF) / 255.0f - meanR) / stdR
                 val g = ((pixelValue shr 8 and 0xFF) / 255.0f - meanG) / stdG
                 val b = ((pixelValue and 0xFF) / 255.0f - meanB) / stdB
-                
                 byteBuffer.putFloat(r)
                 byteBuffer.putFloat(g)
                 byteBuffer.putFloat(b)
             }
         } else {
-            // NCHW: All R, then all G, then all B
-            
-            // Red
             for (pixelValue in pixels) {
                 val r = ((pixelValue shr 16 and 0xFF) / 255.0f - meanR) / stdR
                 byteBuffer.putFloat(r)
             }
-            // Green
             for (pixelValue in pixels) {
                 val g = ((pixelValue shr 8 and 0xFF) / 255.0f - meanG) / stdG
                 byteBuffer.putFloat(g)
             }
-            // Blue
             for (pixelValue in pixels) {
                 val b = ((pixelValue and 0xFF) / 255.0f - meanB) / stdB
                 byteBuffer.putFloat(b)

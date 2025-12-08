@@ -1,9 +1,11 @@
 package com.example.licky.ui.result
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,9 +15,6 @@ import com.example.licky.R
 import com.example.licky.databinding.FragmentResultDetailBinding
 import com.example.licky.utils.DateUtils
 
-/**
- * Result Detail Fragment - Displays detailed scan results
- */
 class ResultDetailFragment : Fragment() {
 
     private var _binding: FragmentResultDetailBinding? = null
@@ -35,7 +34,6 @@ class ResultDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get scan ID from Bundle instead of Safe Args
         scanResultId = arguments?.getString("scanResultId")
 
         if (scanResultId.isNullOrBlank()) {
@@ -52,46 +50,37 @@ class ResultDetailFragment : Fragment() {
         viewModel.scanResult.observe(viewLifecycleOwner) { scanResult ->
             scanResult?.let { result ->
                 binding.apply {
-                    // Load image
                     Glide.with(this@ResultDetailFragment)
                         .load(result.imagePath)
                         .placeholder(R.drawable.ic_tongue)
                         .error(R.drawable.ic_tongue)
                         .into(imageViewScannedTongue)
 
-                    // Date
                     textViewScanDate.text = DateUtils.formatDateTime(result.timestamp)
 
-                    // Headline: show Top-1 predicted label
                     val topLabel = result.detectedDiseases.firstOrNull()?.disease?.name
                         ?: result.overallHealth.name.replace("_", " ")
                     textViewHealthStatus.text = topLabel
 
-                    // Description: show Top-5 list if provided via args, otherwise fallback
-                    val top5Text = arguments?.getString("top5Text")
-                    textViewHealthStatusDescription.text = if (!top5Text.isNullOrBlank()) {
-                        top5Text
-                    } else {
-                        getHealthStatusDescription(result.overallHealth)
-                    }
-                    // Hide detailed disease section
-                    val diseaseCard = requireView().findViewById<com.google.android.material.card.MaterialCardView>(R.id.card_disease_info)
-                    diseaseCard?.visibility = View.GONE
+                    textViewHealthStatusDescription.text = result.detectedDiseases.firstOrNull()?.disease?.description
+                        ?: getHealthStatusDescription(result.overallHealth)
 
-                    // Confidence
-                    textViewConfidenceScore.text = "${(result.confidenceScore * 100).toInt()}%"
-                    progressBarConfidence.progress = (result.confidenceScore * 100).toInt()
+                    cardDiseaseInfo.visibility = View.GONE
 
-                    // Skip showing disease details (kept minimal per request)
-
-                    // Notes
-                    result.notes?.let {
-                        editTextNotes.setText(it)
+                    val confidencePercent = (result.confidenceScore * 100).toInt()
+                    textViewConfidenceScore.text = "$confidencePercent%"
+                    progressBarConfidence.progress = 0
+                    ObjectAnimator.ofInt(progressBarConfidence, "progress", 0, confidencePercent).apply {
+                        duration = 1000
+                        interpolator = DecelerateInterpolator()
+                        start()
                     }
 
+                    result.notes?.let { editTextNotes.setText(it) }
+
+                    buttonBack.setOnClickListener { findNavController().navigateUp() }
                     buttonSaveNotes.setOnClickListener {
-                        val notes = editTextNotes.text.toString()
-                        viewModel.updateNotes(result.id, notes)
+                        viewModel.updateNotes(result.id, editTextNotes.text.toString())
                     }
                 }
             }

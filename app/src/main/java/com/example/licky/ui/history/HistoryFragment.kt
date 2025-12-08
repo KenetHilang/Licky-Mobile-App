@@ -45,7 +45,7 @@ class HistoryFragment : Fragment() {
                 // Fixed: Use Bundle instead of Safe Args
                 val bundle = bundleOf("scanResultId" to scanResult.id)
                 findNavController().navigate(
-                    R.id.action_history_to_result,
+                    R.id.action_global_to_result,
                     bundle
                 )
             },

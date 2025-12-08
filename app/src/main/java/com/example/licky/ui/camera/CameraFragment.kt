@@ -115,12 +115,14 @@ class CameraFragment : Fragment() {
         viewModel.analysisResult.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.loadingOverlay.visibility = View.VISIBLE
                     binding.buttonCapture.isEnabled = false
+                    binding.buttonUpload.isEnabled = false
                 }
                 is Resource.Success -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.loadingOverlay.visibility = View.GONE
                     binding.buttonCapture.isEnabled = true
+                    binding.buttonUpload.isEnabled = true
 
                     resource.data?.let { scanResult ->
                         val pairs = viewModel.classProbabilities.value ?: emptyList()
@@ -140,8 +142,9 @@ class CameraFragment : Fragment() {
                     }
                 }
                 is Resource.Error -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.loadingOverlay.visibility = View.GONE
                     binding.buttonCapture.isEnabled = true
+                    binding.buttonUpload.isEnabled = true
                     Toast.makeText(
                         requireContext(),
                         resource.message ?: "Analysis failed",

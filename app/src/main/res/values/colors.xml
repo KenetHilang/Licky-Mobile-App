@@ -21,7 +21,7 @@
     
     <!-- Status Colors -->
     <color name="success">#a6d189</color>
-    <color name="error">#e78284</color>
+    <color name="error">#e64553</color>
     
     <!-- Other Colors -->
     <color name="divider">#FFE0E0E0</color>

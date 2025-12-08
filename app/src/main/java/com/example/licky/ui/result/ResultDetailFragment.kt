@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.example.licky.R
 import com.example.licky.databinding.FragmentResultDetailBinding
 import com.example.licky.utils.DateUtils
@@ -82,6 +83,9 @@ class ResultDetailFragment : Fragment() {
                     buttonSaveNotes.setOnClickListener {
                         viewModel.updateNotes(result.id, editTextNotes.text.toString())
                     }
+                    buttonDelete.setOnClickListener {
+                        showDeleteConfirmationDialog()
+                    }
                 }
             }
         }
@@ -91,6 +95,26 @@ class ResultDetailFragment : Fragment() {
                 Toast.makeText(requireContext(), "Notes saved successfully", Toast.LENGTH_SHORT).show()
             }
         }
+
+        viewModel.deleteSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Scan deleted successfully", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Scan")
+            .setMessage("Are you sure you want to delete this scan? This action cannot be undone.")
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteScanResult()
+            }
+            .show()
     }
 
     private fun getHealthStatusDescription(status: com.example.licky.data.model.HealthStatus): String {

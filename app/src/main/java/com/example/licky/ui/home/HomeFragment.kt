@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
                 binding.recyclerViewRecentScans.visibility = View.VISIBLE
                 binding.layoutEmptyState.visibility = View.GONE
                 binding.textViewViewAll.visibility = View.VISIBLE
-                scanHistoryAdapter.submitList(scans.take(3))
+                scanHistoryAdapter.submitList(scans.take(4))
             }
         }
 

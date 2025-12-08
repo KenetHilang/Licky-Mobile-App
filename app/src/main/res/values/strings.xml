@@ -29,6 +29,8 @@
     <string name="button_flip">Flip</string>
     <string name="button_upload_from_gallery">Upload from gallery</string>
     <string name="analyzing">Analyzing…</string>
+    <string name="analyzing_image">Analyzing your tongue…</string>
+    <string name="please_wait">Please wait while we process your image</string>
     <string name="camera_permission_required">Camera permission is required</string>
 
     <!-- Results Screen -->

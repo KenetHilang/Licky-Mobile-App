@@ -23,6 +23,9 @@ class ResultDetailViewModel(application: Application) : AndroidViewModel(applica
     private val _updateSuccess = MutableLiveData<Boolean>()
     val updateSuccess: LiveData<Boolean> = _updateSuccess
 
+    private val _deleteSuccess = MutableLiveData<Boolean>()
+    val deleteSuccess: LiveData<Boolean> = _deleteSuccess
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -56,6 +59,19 @@ class ResultDetailViewModel(application: Application) : AndroidViewModel(applica
                 }
             } catch (e: Exception) {
                 _updateSuccess.value = false
+            }
+        }
+    }
+
+    fun deleteScanResult() {
+        viewModelScope.launch {
+            try {
+                _scanResult.value?.let { result ->
+                    repository.deleteScanResult(result)
+                    _deleteSuccess.value = true
+                }
+            } catch (e: Exception) {
+                _deleteSuccess.value = false
             }
         }
     }

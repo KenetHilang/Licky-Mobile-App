@@ -264,6 +264,23 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_delete"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginHorizontal="32dp"
+                android:text="@string/delete_scan"
+                android:textColor="@color/error"
+                app:icon="@drawable/ic_delete"
+                app:iconTint="@color/error"
+                app:strokeColor="@color/error"
+                app:strokeWidth="1dp" />
+
+
         </LinearLayout>
 
     </LinearLayout>
